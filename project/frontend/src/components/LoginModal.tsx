@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSwitchToSignup: () => void;
+  onLoginSuccess: () => void;
 }
 
-const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToSignup }) => {
+const LoginModal: React.FC<LoginModalProps> = ({ 
+  isOpen, 
+  onClose, 
+  onSwitchToSignup, 
+  onLoginSuccess 
+}) => {
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
-    username: '',
+    email: '',
     password: ''
   });
   const [loading, setLoading] = useState(false);
@@ -21,9 +29,16 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToSign
     try {
       // TODO: 로그인 API 호출
       console.log('로그인 시도:', formData);
-      // 임시로 성공 처리
-      alert('로그인 성공!');
-      onClose();
+      
+      // 임시로 성공 처리 - 실제로는 서버에서 받은 사용자 정보를 사용
+      const userData = {
+        id: '1',
+        email: formData.email,
+        nickname: formData.email.split('@')[0] // 이메일에서 닉네임 추출
+      };
+      
+      login(userData);
+      onLoginSuccess();
     } catch (error) {
       console.error('로그인 실패:', error);
       alert('로그인에 실패했습니다.');
@@ -58,12 +73,12 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToSign
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <div className="relative">
-              <span className="absolute left-3 top-3 text-gray-600 text-sm">👤</span>
+              <span className="absolute left-3 top-3 text-gray-600 text-sm">📧</span>
               <input
-                type="text"
-                name="username"
-                placeholder="Username"
-                value={formData.username}
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
                 onChange={handleChange}
                 className="w-full pl-10 pr-4 py-3 bg-white border-0 rounded-md text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required

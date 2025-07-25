@@ -5,26 +5,38 @@ interface SignupModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSwitchToLogin: () => void;
+  onSignupSuccess: () => void;
 }
 
-const SignupModal: React.FC<SignupModalProps> = ({ isOpen, onClose, onSwitchToLogin }) => {
+const SignupModal: React.FC<SignupModalProps> = ({ 
+  isOpen, 
+  onClose, 
+  onSwitchToLogin, 
+  onSignupSuccess 
+}) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    nickname: ''
+    confirmPassword: ''
   });
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (formData.password !== formData.confirmPassword) {
+      alert('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+
     setLoading(true);
     
     try {
       // TODO: 회원가입 API 호출
       console.log('회원가입 시도:', formData);
-      // 임시로 성공 처리
-      alert('회원가입 성공!');
-      onClose();
+      
+      // 회원가입 성공 시 로그인 모달로 전환
+      onSignupSuccess();
     } catch (error) {
       console.error('회원가입 실패:', error);
       alert('회원가입에 실패했습니다.');
@@ -89,12 +101,12 @@ const SignupModal: React.FC<SignupModalProps> = ({ isOpen, onClose, onSwitchToLo
 
           <div>
             <div className="relative">
-              <span className="absolute left-3 top-3 text-gray-600 text-sm">👤</span>
+              <span className="absolute left-3 top-3 text-gray-600 text-sm">🔒</span>
               <input
-                type="text"
-                name="nickname"
-                placeholder="Username"
-                value={formData.nickname}
+                type="password"
+                name="confirmPassword"
+                placeholder="Password 확인"
+                value={formData.confirmPassword}
                 onChange={handleChange}
                 className="w-full pl-10 pr-4 py-3 bg-white border-0 rounded-md text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
