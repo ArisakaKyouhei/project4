@@ -14,6 +14,8 @@
    };
 
    return (
+   )
+ }
 -    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4">
 -      {/* 로그인 버튼 - 우상단 고정 */}
 -      <div className="fixed top-4 right-4 z-40">
